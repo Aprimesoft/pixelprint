@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SentIA.io</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+  <style>
+    body {
+      background: radial-gradient(circle at top left, #0F172A, #1E293B);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    #respostaModal {
+      transform: translateY(-20px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    #respostaModal.block {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #respostaModal.hidden {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    .transition-all {
+      transition: all 0.3s ease;
+    }
+
+    #particles-js {
+      z-index: 0;
+      position: absolute;
+      inset: 0;
+    }
+
+    .typed-text {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.5rem;
+      color: white;
+      text-align: center;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="bg-[#0F172A] text-white relative min-h-screen flex items-center justify-center">
+
+  <div class="min-h-screen flex items-center justify-center px-4">
+    <div class="bg-gray2-800 rounded-2xl shadow1-xl w-full max-w-4xl flex flex-col md:flex-row overflow-hidden">
+
+      <!-- Texto / Branding -->
+      <div class="md:w-1/2 p-8 flex flex-col justify-center bg2-gray-900">
+        <center>
+            <h1 class="text-4xl font-bold mb-4">Pix<span class="text-blue-500">el<span class="text-red-400">Print</span></span></h1>
+        </center>
+        <div class="text-xl text-gray-300 mb-8">
+          <span id="typed-text"></span>
+        </div>
+        <p class="text-gray-400">Transforme comentários em insights com inteligência artificial.</p>
+      </div>
+
+      <!-- Formulário -->
+      <div class="md:w-1/2 p-8 bg-gray2-800">
+
+        <!-- Login Form -->
+        <main id="login" class="relative z-10 w-full max-w-md p-2 b2g2-[2#1E293B]">
+          <div class="text-center">
+            <h2 class="text-3xl font-bold text-white mb-6">Conectar-se<span class="text-yellow-400"></span></h2>
+            <h3 id="mensagens_erro" class="hidden text-sm text-red-500 bg-red-100 border border-red-400 p-3 rounded-lg mt-4 shadow-md">
+              🚫 Acesso negado, por favor verifique os dados e tente novamente.
+            </h3>
+            <h3 id="mensagens_good" class="hidden text-sm text-green-700 bg-green-100 border border-green-400 p-3 rounded-lg mt-4 shadow-md">
+              ✅ Acesso autorizado! Redirecionando...
+            </h3>
+          </div>
+      
+          <form class="space-y-4" id="meuLogin">
+            <div>
+              <label class="block text-sm mb-1">📧 Email / Telefone</label>
+              <br>
+              <input type="text" name="email" placeholder="Email ou Utilizador"
+                class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="email" />
+            </div>
+            <div>
+              <label class="block text-sm mb-1">🔒 Palavra passe</label>
+              <br>
+              <input type="password" name="senha" placeholder="Senha de utilizador"
+                class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="senha" />
+            </div>
+            <input type="submit" value="Iniciar Sessão"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 cursor-pointer" />
+            <p class="text-center mt-3 text-sm">
+              Não tem conta?
+              <a href="#" onclick="abrirconta()" class="text-blue-400 hover:underline">Criar conta</a>
+            </p>
+          </form>
+        </main>
+        <!-- Signup Form -->
+       
+        <main id="CriarConta" class="hidden relative z-10 w-full max-w-md p-2 b2g-[2#1E293B] rounded-2xl ">
+          <div class="text-center">
+            <h2 class="text-3xl font-bold text-white mb-6">Registre-se</h2>
+            <h3 id="mensagens_Novaconta_erro" class="hidden text-sm text-red-500 bg-red-100 border border-red-400 p-3 rounded-lg mt-4 shadow-md">
+              🚫 Não foi possível registar a conta.
+            </h3>
+            <h3 id="mensagens_novaconta_good" class="hidden text-sm text-green-700 bg-green-100 border border-green-400 p-3 rounded-lg mt-4 shadow-md">
+              ✅ Conta criada com sucesso.
+            </h3>
+          </div>
+      
+          <form class="space-y-4" id="Criar_Nova_Conta">
+            <div>
+              <label class="block text-sm mb-1">👤 Nome de utilizador</label>
+               <br>
+              <input type="text" name="nome" placeholder="Nome"
+                class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="CR_nome" required/>
+            </div>
+            <div>
+              <label class="block text-sm mb-1">📧 Email ou Telefone</label>
+               <br>
+              <input type="text" name="email" placeholder="Email ou Telefone"
+                class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="CR_email" required/>
+            </div>
+            <div>
+              <label class="block text-sm mb-1">🔒 Criar Senha</label>
+               <br>
+              <input type="password" name="senha" placeholder="Senha"
+                class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="CR_senha" required/>
+            </div>
+            <button type="submit" id="btnSubmeter"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 flex justify-center items-center">
+              Criar Conta
+              <span id="spinner"
+                class="hidden animate-spin inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full ml-2">
+              </span>
+            </button>
+            <p class="text-center mt-3 text-sm">
+              Já tem conta?
+              <a href="#" onclick="iniciarsessao()" class="text-blue-400 hover:underline">Iniciar sessão</a>
+            </p>
+          </form>
+        </main>
+
+      </div>
+
+    </div>
+  </div>
+  <!-- Modal de feedback -->
+  <div id="overlayCarregamento"
+    class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="w-12 h-12 border-4 border-white border-t-yellow-400 rounded-full animate-spin"></div>
+  </div>
+
+  <script>
+    // Iniciar o efeito de digitação
+    new Typed("#typed-text", {
+      strings: [
+        "Analisando sentimentos...",
+        "Compreendendo emoções humanas...",
+        "Processando linguagem natural...",
+        "Aprendizado contínuo em tempo real..."
+      ],
+      typeSpeed: 40,
+      backSpeed: 30,
+      backDelay: 1500,
+      loop: true,
+    });
+
+  </script>
+
+<script>
+  const meuLogin = document.getElementById('meuLogin');
+  const Criar_Nova_Conta = document.getElementById('Criar_Nova_Conta');
+  const modal = document.getElementById('respostaModal');
+
+  meuLogin.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const senha = document.getElementById('senha').value;
+    const email = document.getElementById('email').value;
+    const erro = document.getElementById('mensagens_erro');
+    const sucesso = document.getElementById('mensagens_good');
+
+    erro.classList.add('hidden');
+    sucesso.classList.add('hidden');
+
+    fetch('/v1/sentIA/avatar/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ senha, email })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.tipo === 'erro') {
+        erro.textContent = `🚫 ${data.mensagem}`;
+        erro.classList.remove('hidden');
+      } else if (data.tipo === 'sucesso') {
+        sucesso.textContent = `✅ ${data.mensagem}`;
+        sucesso.classList.remove('hidden');
+        setTimeout(() => {
+          window.location.href = '/v1/sentIA/dashboard';
+        }, 850);
+      }
+    })
+    .catch(err => {
+      erro.textContent = 'Erro ao conectar-se ao servidor.';
+      erro.classList.remove('hidden');
+    });
+  });
+
+  Criar_Nova_Conta.addEventListener('submit', function (e) {
+    e.preventDefault();
+    mostrarCarregamento()
+
+    const CR_nome = document.getElementById('CR_nome').value;
+    const CR_email = document.getElementById('CR_email').value;
+    const CR_senha = document.getElementById('CR_senha').value;
+    const erro_Conta = document.getElementById('mensagens_Novaconta_erro');
+    const sucesso_Conta = document.getElementById('mensagens_novaconta_good');
+
+    erro_Conta.classList.add('hidden');
+    sucesso_Conta.classList.add('hidden');
+
+    fetch('/v1/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome: CR_nome, email: CR_email, senha: CR_senha })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.tipo === 'erro') {
+        erro_Conta.textContent = `🚫 ${data.mensagem}`;
+        erro_Conta.classList.remove('hidden');
+      } else if (data.tipo === 'sucesso') {
+        sucesso_Conta.textContent = `✅ ${data.mensagem}`;
+        sucesso_Conta.classList.remove('hidden');
+        setTimeout(() => {
+           ocultarCarregamento();
+          window.location.href = '/';
+        }, 850);
+      }
+    })
+    .catch(err => {
+      erro_Conta.textContent = 'Erro ao conectar-se ao servidor.';
+      erro_Conta.classList.remove('hidden');
+    });
+  });
+
+  function mostrarModals(mensagem, destino) {
+    modal.textContent = mensagem;
+    modal.classList.remove('hidden');
+    modal.classList.add('block');
+    setTimeout(() => {
+      modal.classList.remove('block');
+      modal.classList.add('hidden');
+      window.location.href = destino;
+    }, 850);
+  }
+
+  function abrirconta() {
+    document.getElementById('login').classList.add('hidden');
+    document.getElementById('CriarConta').classList.remove('hidden');
+  }
+
+  function iniciarsessao() {
+    document.getElementById('CriarConta').classList.add('hidden');
+    document.getElementById('login').classList.remove('hidden');
+  }
+
+  const btn = document.getElementById('btnSubmeter');
+  const spinner = document.getElementById('spinner');
+  const overlay = document.getElementById('overlayCarregamento');
+
+  function mostrarCarregamento() {
+    spinner.classList.remove('hidden');
+    btn.disabled = true;
+    btn.classList.add('opacity-50', 'cursor-not-allowed');
+    overlay.classList.remove('hidden');
+  }
+
+  function ocultarCarregamento() {
+    spinner.classList.add('hidden');
+    btn.disabled = false;
+    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    overlay.classList.add('hidden');
+  }
+</script>
+
+</body>
+</html>

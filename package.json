@@ -1,0 +1,39 @@
+{
+  "name": "pixelprint",
+  "version": "1.0.0",
+  "description": "sistema de gestão e controle de fluxo da genesis",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "i": "npm i express ejs mongoose body-parser swagger swagger-ui-express multer xlsx dotenv openai cors express-session",
+    "dev":"node --watch app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aprimesoft/pixelprint.git"
+  },
+  "keywords": [
+    "Genesis"
+  ],
+  "author": "Ab primesoft",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aprimesoft/pixelprint/issues"
+  },
+  "homepage": "https://github.com/Aprimesoft/pixelprint#readme",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "mongoose": "^8.16.0",
+    "multer": "^2.0.1",
+    "openai": "^5.6.0",
+    "swagger": "^0.7.5",
+    "swagger-ui-express": "^5.0.1",
+    "xlsx": "^0.18.5"
+  }
+}
