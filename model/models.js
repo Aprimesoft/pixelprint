@@ -21,7 +21,8 @@ const Equipamento = mongoose.model('Equipamento',{
     estado:String,
     areafuncional:String,
     Qt_em_uso:Number,
-    Data_entrada:Date
+    Data_entrada:Date,
+    imagem:String
 })
 /*
 const Topicos = mongoose.model('Topicos',{

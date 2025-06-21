@@ -4,10 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SentIA.io</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
   <style>
     body {
       background: radial-gradient(circle at top left, #0F172A, #1E293B);
@@ -19,25 +18,45 @@
       0% { opacity: 0; transform: translateY(10px); }
       100% { opacity: 1; transform: translateY(0); }
     }
+    #loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      display: none;
+    }
   </style>
 </head>
 <body class="text-white">
+<div id="loader-overlay">
+  <div class="text-center text-white text-xl animate-pulse">
+    <div class="flex items-center justify-center space-x-2">
+      <span class="w-4 h-4 bg-yellow-400 rounded-full animate-bounce"></span>
+      <span class="w-4 h-4 bg-yellow-500 rounded-full animate-bounce delay-150"></span>
+      <span class="w-4 h-4 bg-yellow-600 rounded-full animate-bounce delay-300"></span>
+    </div>
+    <p class="mt-4">Salvando os dados ... </p>
+  </div>
+</div>
 
-<div class="flex h-screen">
-   <!-- Sidebar -->
-   <aside class="w-64 bg-[#0F172A] p-5 border-r border-gray-700 flex flex-col justify-between h-screen">
+<div class="flex flex-col md:flex-row min-h-screen">
+  <!-- Sidebar -->
+  <aside class="w-full md:w-64 bg-[#0F172A] p-5 border-b md:border-b-0 md:border-r border-gray-700 flex flex-col justify-between">
     <div>
       <h1 class="text-2xl font-bold mb-10">Sent<span class="text-yellow-400">IA.io</span></h1>
       <nav class="space-y-3">
         <a href="/pixelprint/minhaconta" class="block hover:text-green-400">Início</a>
         <a href="/pixelprint/equipamentos" class="block hover:text-green-400">Cadastrar</a>
-        
       </nav>
     </div>
-  
-    <!-- Perfil do Usuário -->
-    <div class="mt-auto">
-      <div class="bg-grays-800 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:bg-gray-800" onclick="toggleUserMenu()">
+    <div class="mt-6">
+      <div class="bg-gray-800 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:bg-gray-700" onclick="toggleUserMenu()">
         <div class="flex items-center gap-3">
           <img id="avatarUsuario" src="https://i.pravatar.cc/40?u=usuario" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-yellow-400" />
           <div>
@@ -47,9 +66,7 @@
         </div>
         <span id="arrowUserMenu" class="text-gray-400">▼</span>
       </div>
-  
-      <!-- Menu do usuário -->
-      <div id="userMenu" class="mt-5 2bg-gray-700 rounded-lg p-2 hidden">
+      <div id="userMenu" class="mt-5 bg-gray-700 rounded-lg p-2 hidden">
         <a href="/perfil" class="block px-3 py-2 hover:bg-gray-600 rounded text-sm">👤 Perfil</a>
         <a href="/v1/sentIA/avatar/configuracao/<%=  %>" class="block px-3 py-2 hover:bg-gray-600 rounded text-sm">⚙️ Configurações</a>
         <a href="/" class="block px-3 py-2 hover:bg-gray-600 rounded text-sm text-red-400">🚪 Sair</a>
@@ -59,133 +76,230 @@
 
   <!-- Conteúdo -->
   <main class="flex-1 p-6 overflow-y-auto">
-    <h2 class="text-3xl mb-6 font-semibold" hidden>🧠 Análise de Sentimentos</h2>  
-
-    <!-- Seção de gráficos -->
     <div class="mt-12">
-        <h3 class="text-xl mb-4">📈 Gráficos de Análise de Sentimentos</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Gráfico de Sentimentos -->
-          <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg" style="width:500px; height: 270px;">
-            <canvas id="graficoBarrasVerticais"></canvas>
-          </div>
-          <!-- Gráfico de Confiança -->
-          <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg" style="width:500px; height: 270px;">
-            <canvas id="graficoBarrasHorizontais"></canvas>
-          </div>
-          <!-- Gráfico de Confiança -->
-          <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg" style="width:500px; height: 280px;">
-            <canvas id="graficoPizza" hidden></canvas>
-          </div>
+      <h3 class="text-xl mb-4">Controle de equipamentos</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg w-full h-[270px]">
+          <canvas id="graficoBarrasVerticais"></canvas>
         </div>
-    </div>
-    
-    <!-- Campo de pesquisa -->
-    <div class="mt-10 mb-4">
-    <input type="text" id="searchInput" placeholder="Pesquisar comentário ou assunto..."
-           class="w-full md:w-1/2 p-3 rounded-lg bg-gray-800 text-white outline-none" onkeyup="filtrarTabela()">
+        <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg w-full h-[270px]">
+          <canvas id="graficoBarrasHorizontais"></canvas>
+        </div>
+        <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg w-full h-[280px]">
+          <canvas id="graficoPizza"></canvas>
+        </div>
+      </div>
     </div>
 
-    <!-- Tabela de Resultados com Ações -->
-    <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg fade-in overflow-auto">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-xl">📊 Resultados da Análise</h3>
-      <button onclick="abrirModalAssunto()" class="bg-yellow-500 px-3 py-1 rounded hover:bg-yellow-600">➕</button>
+
+    <!-- Formulários de Registro -->
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Formulário de Registro de Equipamento -->
+      <div class="md:col-span-2 bg-[#1E293B] p-6 rounded-2xl shadow-lg text-sm md:text-base">
+        <h3 class="text-xl mb-4">📦 Registrar Novo Equipamento</h3>
+        <form class="grid grid-cols-1 md:grid-cols-2 gap-4" action="/pixelprint/equipamento/novo" method="POST" enctype="multipart/form-data">
+          
+          <!-- Upload de Imagem com Arrastar e Soltar -->
+          <div class="md:col-span-2">
+            
+            <div id="drop-area" class="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-yellow-400 rounded-lg cursor-pointer bg-gray-800 text-center">
+              <p class="mb-2 text-sm text-gray-300">Arraste e solte uma imagem aqui ou clique para selecionar</p>
+              <input type="file" id="imagem" name="imagem" accept="image/*" class="hidden" required>
+              <div id="preview" class="mt-4"></div>
+            </div>
+          </div>
+          
+          <input type="text" name="desinacao" placeholder="Designação" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="text" name="marca" placeholder="Marca" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="number" name="quantidade" placeholder="Quantidade" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="text" name="estado" placeholder="Estado" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="text" name="areafuncional" placeholder="Área Funcional" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="number" name="Qt_em_uso" placeholder="Quantidade em Uso" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="date" name="Data_entrada" class="p-3 rounded-lg bg-gray-800 text-white" required>
+
+          <div class="md:col-span-2 flex justify-end">
+            <button type="submit" class="bg-yellow-500 px-4 py-2 rounded-lg hover:bg-yellow-600">Salvar Equipamento</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Formulário de Registro de Ocorrências por Máquina -->
+      <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg text-sm md:text-base">
+        <h3 class="text-xl mb-4">🛠️ Registrar Ocorrência por Máquina</h3>
+        <form class="grid grid-cols-1 gap-4" action="/v1/ocorrencia/novo" method="POST">
+          <input type="text" name="equipamento" placeholder="Nome do Equipamento ou ID" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="date" name="data" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="text" name="tipo" placeholder="Tipo de Ocorrência (Ex: Paragem, Manutenção)" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <textarea name="descricao" placeholder="Descrição da Ocorrência" class="p-3 rounded-lg bg-gray-800 text-white" rows="4" required></textarea>
+          <div class="flex justify-end">
+            <button type="submit" class="bg-yellow-500 px-4 py-2 rounded-lg hover:bg-yellow-600">Salvar Ocorrência</button>
+          </div>
+        </form>
+      </div>
     </div>
-  
-    <table class="min-w-full divide-y divide-gray-700 text-sm text-left text-white" id="tabelaResultados">
-      <thead class="bg-gray-800">
-        <tr>
-          <th class="px-6 py-3">Topico em analise</th>
-          <th class="px-6 py-3">Sentimento</th>
-          <th class="px-6 py-3">Confiança</th>
-          <th class="px-6 py-3">Confiança</th>
-          <th class="px-6 py-3">Ações</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-700"  id="dataTable">   
-       <tr></tr>
-     
-            <tr class="hover:bg-gray-700">
-            <td class="px-6 py-4">= assunto.Assunto</td>
-            <td class="px-6 py-4 text-green-400"> assunto.Positivo </td>
-            <td class="px-6 py-4 text-red-400"> assunto.Neutro </td>
-            <td class="px-6 py-4 text-yellow-400"> assunto.Negativo </td>
-            <td class="px-6 py-4 space-x-2">
-                <a href="/v1/sentIA/avatar/painel_assuntos/ assunto._id " class="text-red-600 px-3 py-2 rounded hover:bg-red-700"> 🗑️</a>
-                <a href="/v1/sentIA/avatar/filtro" class="bg-blue-600 text-white-600 px-3 py-2 rounded hover:bg-blue-700"> ! </a>
-                <button onclick="openModal()" class="bg-purple-600 px-3 py-2 rounded-lg hover:bg-purple-700">
-                    Análise Profunda
-                </button>
-            </td>
-            </tr>
-      
-       
-        <!-- Outras linhas aqui -->
-      </tbody>
-    </table>
+
+    <div class="mt-10 mb-4">
+      <input type="text" id="searchInput" placeholder="Pesquisar comentário ou assunto..." class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none" onkeyup="filtrarTabela()">
     </div>
-  
+
+    <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg fade-in overflow-x-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl">📊 Lsita de equipamentos</h3>
+        <button onclick="abrirModalAssunto()" class="bg-yellow-500 px-3 py-1 rounded hover:bg-yellow-600">➕</button>
+      </div>
+      <table class="min-w-full divide-y divide-gray-700 text-sm text-left text-white" id="tabelaResultados">
+        <thead class="bg-gray-800">
+          <tr>
+            <th class="px-6 py-3">Ord</th>
+            <th class="px-6 py-3">imagem</th>
+            <th class="px-6 py-3">Designação</th>
+            <th class="px-6 py-3">Marca</th>
+            <th class="px-6 py-3">Quantidade</th>
+            <th class="px-6 py-3">Estado</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-700" id="dataTable">
+          <tr class="hover:bg-gray-700">
+           
+             <% DadosEquipamento.forEach(Equipamento =>{ %>
+                <tr class="hover:bg-gray-700">
+                <td class="px-6 py-4"></td>
+                <td class="px-6 py-4"><%= Equipamento.imagem %></td>
+                <td class="px-6 py-4"><%= Equipamento.desinacao %></td> 
+                <td class="px-6 py-4"><%= Equipamento.desinacao %></td> 
+                <td class="px-6 py-4"><%= Equipamento.desinacao %></td>
+                <td class="px-6 py-4"><%= Equipamento.desinacao %></td> 
+
+                <td class="px-6 py-4 space-x-2">
+                    <a href="/v1/sentIA/avatar/painel_assuntos/ " class="text-red-600 px-3 py-2 rounded hover:bg-red-700"> 🗑️</a>
+                    <a href="/v1/sentIA/avatar/filtro/ >" class="bg-blue-600 text-white-600 px-3 py-2 rounded hover:bg-blue-700"> ! </a>
+                    <button onclick="openModal()" class="bg-purple-600 px-3 py-2 rounded-lg hover:bg-purple-700">
+                        Análise Profunda
+                    </button>
+                </td>
+                </tr>
+            <% }) %>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </main>
 </div>
- 
- <!-- Modal -->
+
+<!-- Modal -->
 <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
-    <div class="bg-[#1E293B] p-8 rounded-2xl w-full max-w-lg fade-in">
-        <h3 class="text-2xl mb-4">Análise Profunda do Assunto</h3>
-
-        <form class="space-y-4">
-            <div>
-                <label class="block mb-2">Visão da Análise:</label>
-                <div class="space-y-2">
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" class="accent-purple-600"> Social
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" class="accent-purple-600"> Político
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" class="accent-purple-600"> Econômico
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" class="accent-purple-600"> Outros
-                    </label>
-                </div>
-            </div>
-
-            <div>
-                <label class="block mb-2">Detalhes Adicionais:</label>
-                <textarea class="w-full p-3 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" rows="4" placeholder="Forneça mais detalhes..."></textarea>
-            </div>
-
-            <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-600 rounded-lg hover:bg-gray-700">Cancelar</button>
-                <button type="submit" class="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700">🔍 iniciar analise</button>
-            </div>
-        </form>
-    </div>
+  <div class="bg-[#1E293B] p-6 rounded-2xl w-full max-w-md fade-in">
+    <h3 class="text-2xl mb-4">Análise Profunda do Assunto</h3>
+    <form class="space-y-4">
+      <div>
+        <label class="block mb-2">Visão da Análise:</label>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2"><input type="checkbox" class="accent-purple-600"> Social</label>
+          <label class="flex items-center gap-2"><input type="checkbox" class="accent-purple-600"> Político</label>
+          <label class="flex items-center gap-2"><input type="checkbox" class="accent-purple-600"> Econômico</label>
+          <label class="flex items-center gap-2"><input type="checkbox" class="accent-purple-600"> Outros</label>
+        </div>
+      </div>
+      <div>
+        <label class="block mb-2">Detalhes Adicionais:</label>
+        <textarea class="w-full p-3 bg-gray-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" rows="4" placeholder="Forneça mais detalhes..."></textarea>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-600 rounded-lg hover:bg-gray-700">Cancelar</button>
+        <button type="submit" class="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700">🔍 iniciar analise</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- Modal: Adicionar Novo Assunto -->
 <div id="modalAssunto" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-    <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg w-full max-w-md">
-      <h2 class="text-2xl mb-4 font-semibold">Adicionar Novo Assunto</h2>
-      <form id="assuntoForm0" class="space-y-4" action="/v1/sentIA/analise/add_assunto" method="post">
-        <input type="text" name="tema" placeholder="Título do Assunto" required class="w-full p-3 rounded-lg bg-gray-800 text-white">
-        <textarea placeholder="Descrição (opcional)" name="materia" rows="4" class="w-full p-3 rounded-lg bg-gray-800 text-white"></textarea>
-        <div class="flex justify-end gap-2">
-          <button type="button" onclick="fecharModalAssunto()" class="bg-gray-600 px-4 py-2 rounded-lg hover:bg-gray-700">
-            Cancelar
-          </button>
-          <button type="submit" class="bg-yellow-500 px-4 py-2 rounded-lg hover:bg-yellow-600">
-            Salvar
-          </button>
-        </div>
-      </form>
-    </div>
+  <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg w-full max-w-md mx-4">
+    <h2 class="text-2xl mb-4 font-semibold">Adicionar Novo Assunto</h2>
+    <form id="assuntoForm0" class="space-y-4" action="/v1/sentIA/analise/add_assunto" method="post">
+      <input type="text" name="tema" placeholder="Título do Assunto" required class="w-full p-3 rounded-lg bg-gray-800 text-white">
+      <textarea placeholder="Descrição (opcional)" name="materia" rows="4" class="w-full p-3 rounded-lg bg-gray-800 text-white"></textarea>
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="fecharModalAssunto()" class="bg-gray-600 px-4 py-2 rounded-lg hover:bg-gray-700">Cancelar</button>
+        <button type="submit" class="bg-yellow-500 px-4 py-2 rounded-lg hover:bg-yellow-600">Salvar</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script src="/js/char.js"></script>
+<script>
+ 
+  const equipamentoForm = document.querySelector("form[action='/pixelprint/equipamento/novo']");
+  const ocorrenciaForm = document.querySelector("form[action='/v1/ocorrencia/novo']");
+  const loader = document.getElementById('loader-overlay');
+  const dataTable = document.getElementById("dataTable");
+
+  function adicionarLinhaTabelaEquipamento(dados, ordem) {
+    const novaLinha = document.createElement("tr");
+    novaLinha.classList.add("hover:bg-gray-700");
+    novaLinha.innerHTML = `
+      <td class="px-6 py-4">${ordem}</td>
+      <td class="px-6 py-4"><img src="/public/uploads/${dados.imagem}" class="w-10 h-10 rounded" alt="Imagem"></td>
+      <td class="px-6 py-4">${dados.desinacao}</td>
+      <td class="px-6 py-4">${dados.marca}</td>
+      <td class="px-6 py-4">${dados.quantidade}</td>
+      <td class="px-6 py-4">${dados.estado}</td>
+    `;
+    dataTable.appendChild(novaLinha);
+  }
+
+  async function enviarFormularioEquipamento() {
+    try {
+      loader.style.display = 'flex';
+      const formData = new FormData(equipamentoForm);
+      const response = await fetch(equipamentoForm.action, {
+        method: 'POST',
+        body: formData
+      });
+      loader.style.display = 'none';
+      if (response.ok) {
+        const dados = await response.json();
+        alert("✅ Equipamento salvo com sucesso!");
+        equipamentoForm.reset();
+        preview.innerHTML = "";
+        adicionarLinhaTabelaEquipamento(dados, dataTable.children.length + 1);
+      } else {
+        const erro = await response.text();
+        alert("❌ Erro ao salvar equipamento: " + erro);
+      }
+    } catch (erro) {
+      loader.style.display = 'none';
+      alert("❌ Erro inesperado: " + erro.message);
+    }
+  }
+
+  if (equipamentoForm) {
+    equipamentoForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+      enviarFormularioEquipamento();
+    });
+  }
+
+  if (ocorrenciaForm) {
+    ocorrenciaForm.addEventListener("submit", async function(event) {
+      event.preventDefault();
+      loader.style.display = 'flex';
+      const formData = new FormData(ocorrenciaForm);
+      const response = await fetch(ocorrenciaForm.action, {
+        method: 'POST',
+        body: formData
+      });
+      loader.style.display = 'none';
+      if (response.ok) {
+        alert("✅ Ocorrência registrada com sucesso!");
+        ocorrenciaForm.reset();
+      } else {
+        alert("❌ Falha ao registrar a ocorrência.");
+      }
+    });
+  }
+</script>
 
 </body>
 </html>

@@ -164,3 +164,33 @@ function filtrarComentarios() {
         document.getElementById('modal').classList.add('hidden');
         document.getElementById('modal').classList.remove('flex');
     }
+
+
+    //funcionalidade de clicar e arrastar
+     const dropArea = document.getElementById('drop-area');
+  const fileInput = document.getElementById('imagem');
+  const preview = document.getElementById('preview');
+
+  dropArea.addEventListener('click', () => fileInput.click());
+  dropArea.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropArea.classList.add('border-green-400');
+  });
+  dropArea.addEventListener('dragleave', () => dropArea.classList.remove('border-green-400'));
+  dropArea.addEventListener('drop', e => {
+    e.preventDefault();
+    dropArea.classList.remove('border-green-400');
+    fileInput.files = e.dataTransfer.files;
+    showPreview(fileInput.files[0]);
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) showPreview(fileInput.files[0]);
+  });
+
+  function showPreview(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.innerHTML = `<img src="${e.target.result}" alt="Pré-visualização" class="w-32 h-32 object-cover rounded-lg border mt-2"> <p class='text-sm mt-2'>${file.name}</p>`;
+    };
+    reader.readAsDataURL(file);
+  }

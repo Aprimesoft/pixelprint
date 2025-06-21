@@ -3,6 +3,8 @@ const body_parser = require('body-parser');
 const cors = require('cors');
 const http = require('http'); 
 const fs = require('fs');
+const multer = require('multer');
+const path = require('path');
 
 const session = require('express-session');
 const app = express();
@@ -39,7 +41,6 @@ function verificarLogin(req, res, next) {
       res.redirect('/')
     }
 }
-  
 
 // Rotas principais
 app.get('/', async (req, res) => {res.render('app');});
@@ -68,6 +69,11 @@ app.get('/pixelprint/minhaconta', verificarLogin, async (req, res) => {
     res.render('admin',{dados_utiliador:DadosUlizador});
 
 });
+
+//registo de novo equipamento
+const upload = require('./controller/multer')
+
+app.post('/pixelprint/equipamento/novo',upload.single('imagem'), controller.NovoEquiamento)
 
 // Define a porta correta para ambientes online
 const PORTA = process.env.PORT || 8080;
