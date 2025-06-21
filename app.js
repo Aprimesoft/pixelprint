@@ -17,6 +17,8 @@ app.use(express.json());
 
 //dependecias
 const bd = require('./database/database')
+const controller = require('./controller/controleer')
+const models = require('./model/models')
  
 
 /**função global para a verificação dos autenticação dos dados */
@@ -41,7 +43,31 @@ function verificarLogin(req, res, next) {
 
 // Rotas principais
 app.get('/', async (req, res) => {res.render('app');});
+ 
 
+app.post('/pixelprint/Cadastrar', controller.Novo_funcionario);
+app.post('/pixelprint/acesso', controller.Acesso);
+
+
+app.get('/pixelprint/equipamentos', verificarLogin, async (req, res) => {
+
+    console.log('buscando equipamentos ... ') 
+    const DadosUlizador = await models.Utilizador.findOne({ _id:req.session.utilizador.id});
+    const DadosEquipamento = await models.Equipamento.find({});
+    //const lista = await models.Topicos.find({});
+    res.render('equipamentos',{dados_utiliador:DadosUlizador,DadosEquipamento:DadosEquipamento});
+
+});
+
+app.get('/pixelprint/minhaconta', verificarLogin, async (req, res) => {
+
+    console.log('Utilizador Verificado ... !')
+    const utilizador = req.session.utilizador;
+    const DadosUlizador = await models.Utilizador.findOne({ _id:req.session.utilizador.id});
+    //const lista = await models.Topicos.find({});
+    res.render('admin',{dados_utiliador:DadosUlizador});
+
+});
 
 // Define a porta correta para ambientes online
 const PORTA = process.env.PORT || 8080;

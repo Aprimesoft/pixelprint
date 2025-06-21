@@ -58,7 +58,7 @@
       color: white;
       text-align: center;
       z-index: 10;
-    }
+    } 
   </style>
 </head>
 <body class="bg-[#0F172A] text-white relative min-h-screen flex items-center justify-center">
@@ -115,49 +115,81 @@
         </main>
         <!-- Signup Form -->
        
-        <main id="CriarConta" class="hidden relative z-10 w-full max-w-md p-2 b2g-[2#1E293B] rounded-2xl ">
-          <div class="text-center">
-            <h2 class="text-3xl font-bold text-white mb-6">Registre-se</h2>
-            <h3 id="mensagens_Novaconta_erro" class="hidden text-sm text-red-500 bg-red-100 border border-red-400 p-3 rounded-lg mt-4 shadow-md">
-              🚫 Não foi possível registar a conta.
-            </h3>
-            <h3 id="mensagens_novaconta_good" class="hidden text-sm text-green-700 bg-green-100 border border-green-400 p-3 rounded-lg mt-4 shadow-md">
-              ✅ Conta criada com sucesso.
-            </h3>
-          </div>
-      
-          <form class="space-y-4" id="Criar_Nova_Conta">
-            <div>
-              <label class="block text-sm mb-1">👤 Nome de utilizador</label>
-               <br>
-              <input type="text" name="nome" placeholder="Nome"
-                class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="CR_nome" required/>
+       <main id="CriarConta" class="hidden relative z-10 mx-auto w-full max-w-8xl p-6 rounded-2xl ">
+            <div class="text-center col-span-2">
+                <h2 class="text-3xl font-bold text-white mb-4">Registre-se</h2>
+                <h3 id="mensagens_Novaconta_erro" class="hidden text-sm text-red-500 bg-red-100 border border-red-400 p-3 rounded-lg mt-4 shadow-md">
+                🚫 Não foi possível registar a conta.
+                </h3>
+                <h3 id="mensagens_novaconta_good" class="hidden text-sm text-green-700 bg-green-100 border border-green-400 p-3 rounded-lg mt-4 shadow-md">
+                ✅ Conta criada com sucesso.
+                </h3>
             </div>
-            <div>
-              <label class="block text-sm mb-1">📧 Email ou Telefone</label>
-               <br>
-              <input type="text" name="email" placeholder="Email ou Telefone"
-                class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="CR_email" required/>
-            </div>
-            <div>
-              <label class="block text-sm mb-1">🔒 Criar Senha</label>
-               <br>
-              <input type="password" name="senha" placeholder="Senha"
-                class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="CR_senha" required/>
-            </div>
-            <button type="submit" id="btnSubmeter"
-              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 flex justify-center items-center">
-              Criar Conta
-              <span id="spinner"
-                class="hidden animate-spin inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full ml-2">
-              </span>
-            </button>
-            <p class="text-center mt-3 text-sm">
-              Já tem conta?
-              <a href="#" onclick="iniciarsessao()" class="text-blue-400 hover:underline">Iniciar sessão</a>
-            </p>
-          </form>
+
+            <form class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6" id="Criar_Nova_Conta">
+               
+                 
+                <div class="col-span-2">
+                <label class="block text-sm mb-1 text-white">Nome de utilizador</label>
+                <input type="text" name="nome" placeholder="Nome"
+                    class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="CR_nome" required/>
+                </div>
+
+                <div>
+                <label class="block text-sm mb-1 text-white">Gênero</label>
+                <select name="genero" id="CR_genero"
+                    class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400">
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                </select>
+                </div>
+
+                <div>
+                <label class="block text-sm mb-1 text-white">Data de nascimento</label>
+                <input type="date" name="datanascimento"
+                    class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="CR_datanascimento" required/>
+                </div>
+
+                <div>
+                <label class="block text-sm mb-1 text-white">Naturalidade</label>
+                <input type="text" name="naturalidade" placeholder="Província de nascimento"
+                    class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="CR_naturalidade" required/>
+                </div>
+
+                <div>
+                <label class="block text-sm mb-1 text-white">Telefone</label>
+                <input type="text" name="telefone" placeholder="Informe o número de telefone"
+                    class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="CR_telefone" required/>
+                </div>
+                <div class="col-span-2">
+                <label class="block text-sm mb-1 text-white">📧 Email ou Telefone</label>
+                <input type="text" name="email" placeholder="Email ou Telefone"
+                    class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="CR_email" required/>
+                </div>
+
+                <div class="col-span-2">
+                <label class="block text-sm mb-1 text-white">🔒 Criar Senha</label>
+                <input type="password" name="senha" placeholder="Senha"
+                    class="w-full p-3 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-yellow-400" id="CR_senha" required/>
+                </div>
+
+                <div class="col-span-2">
+                <button type="submit" id="btnSubmeter"
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 flex justify-center items-center">
+                    Criar Conta
+                    <span id="spinner"
+                    class="hidden animate-spin inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full ml-2">
+                    </span>
+                </button>
+                </div>
+
+                <div class="col-span-2 text-center mt-3 text-sm text-white">
+                Já tem conta?
+                <a href="#" onclick="iniciarsessao()" class="text-blue-400 hover:underline">Iniciar sessão</a>
+                </div>
+            </form>
         </main>
+
 
       </div>
 
@@ -202,7 +234,7 @@
     erro.classList.add('hidden');
     sucesso.classList.add('hidden');
 
-    fetch('/v1/sentIA/avatar/login', {
+    fetch('/pixelprint/acesso', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ senha, email })
@@ -216,7 +248,7 @@
         sucesso.textContent = `✅ ${data.mensagem}`;
         sucesso.classList.remove('hidden');
         setTimeout(() => {
-          window.location.href = '/v1/sentIA/dashboard';
+          window.location.href = '/pixelprint/minhaconta';
         }, 850);
       }
     })
@@ -233,16 +265,20 @@
     const CR_nome = document.getElementById('CR_nome').value;
     const CR_email = document.getElementById('CR_email').value;
     const CR_senha = document.getElementById('CR_senha').value;
+    const genero = document.getElementById('CR_genero').value;
+    const datanascimento = document.getElementById('CR_datanascimento').value;
+    const naturalidade = document.getElementById('CR_naturalidade').value;
+    const telefone = document.getElementById('CR_telefone').value;
     const erro_Conta = document.getElementById('mensagens_Novaconta_erro');
     const sucesso_Conta = document.getElementById('mensagens_novaconta_good');
 
     erro_Conta.classList.add('hidden');
     sucesso_Conta.classList.add('hidden');
 
-    fetch('/v1/', {
+    fetch('/pixelprint/Cadastrar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome: CR_nome, email: CR_email, senha: CR_senha })
+      body: JSON.stringify({ nome: CR_nome, genero:genero, Datanascimento:datanascimento, naturalidade:naturalidade, telefone:telefone, email: CR_email, senha: CR_senha })
     })
     .then(res => res.json())
     .then(data => {
