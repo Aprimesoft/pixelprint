@@ -69,6 +69,7 @@ app.get('/pixelprint/minhaconta', verificarLogin, async (req, res) => {
     res.render('admin',{dados_utiliador:DadosUlizador});
 
 });
+app.get('/pixelprint/equipamento/excluir/:id', verificarLogin,controller.ExcluirEquipamento);
 
 //registo de novo equipamento
 const upload = require('./controller/multer')

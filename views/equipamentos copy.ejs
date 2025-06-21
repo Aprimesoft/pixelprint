@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SentIA.io</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <style>
@@ -18,9 +18,32 @@
       0% { opacity: 0; transform: translateY(10px); }
       100% { opacity: 1; transform: translateY(0); }
     }
+    #loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      display: none;
+    }
   </style>
 </head>
 <body class="text-white">
+<div id="loader-overlay">
+  <div class="text-center text-white text-xl animate-pulse">
+    <div class="flex items-center justify-center space-x-2">
+      <span class="w-4 h-4 bg-yellow-400 rounded-full animate-bounce"></span>
+      <span class="w-4 h-4 bg-yellow-500 rounded-full animate-bounce delay-150"></span>
+      <span class="w-4 h-4 bg-yellow-600 rounded-full animate-bounce delay-300"></span>
+    </div>
+    <p class="mt-4">Salvando os dados ... </p>
+  </div>
+</div>
 
 <div class="flex flex-col md:flex-row min-h-screen">
   <!-- Sidebar -->
@@ -54,7 +77,7 @@
   <!-- Conteúdo -->
   <main class="flex-1 p-6 overflow-y-auto">
     <div class="mt-12">
-      <h3 class="text-xl mb-4">📈 Gráficos de Análise de Sentimentos</h3>
+      <h3 class="text-xl mb-4">Controle de equipamentos</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg w-full h-[270px]">
           <canvas id="graficoBarrasVerticais"></canvas>
@@ -68,21 +91,53 @@
       </div>
     </div>
 
-    <!-- Formulário de Registro de Equipamento -->
-    <div class="mt-12 bg-[#1E293B] p-6 rounded-2xl shadow-lg">
-      <h3 class="text-xl mb-4">📦 Registrar Novo Equipamento</h3>
-      <form class="grid grid-cols-1 md:grid-cols-2 gap-4" action="/v1/equipamento/novo" method="POST">
-        <input type="text" name="desinacao" placeholder="Designação" class="p-3 rounded-lg bg-gray-800 text-white" required>
-        <input type="text" name="marca" placeholder="Marca" class="p-3 rounded-lg bg-gray-800 text-white" required>
-        <input type="number" name="quantidade" placeholder="Quantidade" class="p-3 rounded-lg bg-gray-800 text-white" required>
-        <input type="text" name="estado" placeholder="Estado" class="p-3 rounded-lg bg-gray-800 text-white" required>
-        <input type="text" name="areafuncional" placeholder="Área Funcional" class="p-3 rounded-lg bg-gray-800 text-white" required>
-        <input type="number" name="Qt_em_uso" placeholder="Quantidade em Uso" class="p-3 rounded-lg bg-gray-800 text-white" required>
-        <input type="date" name="Data_entrada" class="p-3 rounded-lg bg-gray-800 text-white" required>
-        <div class="md:col-span-2 flex justify-end">
-          <button type="submit" class="bg-yellow-500 px-4 py-2 rounded-lg hover:bg-yellow-600">Salvar Equipamento</button>
-        </div>
-      </form>
+
+    <!-- Formulários de Registro -->
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Formulário de Registro de Equipamento -->
+      <div class="md:col-span-2 bg-[#1E293B] p-6 rounded-2xl shadow-lg text-sm md:text-base">
+        <h3 class="text-xl mb-4">📦 Registrar Novo Equipamento</h3>
+        <form class="grid grid-cols-1 md:grid-cols-2 gap-4" action="/pixelprint/equipamento/novo" method="POST" enctype="multipart/form-data">
+          
+          
+          <input type="text" name="desinacao" placeholder="Designação" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="text" name="marca" placeholder="Marca" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="number" name="quantidade" placeholder="Quantidade" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="text" name="estado" placeholder="Estado" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="text" name="areafuncional" placeholder="Área Funcional" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="number" name="Qt_em_uso" placeholder="Quantidade em Uso" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="date" name="Data_entrada" class="p-3 rounded-lg bg-gray-800 text-white" required>
+
+          <!-- Upload de Imagem com Arrastar e Soltar -->
+          <div class="md:col-span-2">
+            
+            <div id="drop-area" class="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-yellow-400 rounded-lg cursor-pointer bg-gray-800 text-center">
+              <p class="mb-2 text-sm text-gray-300">Arraste e solte uma imagem aqui ou clique para selecionar</p>
+              <input type="file" id="imagem" name="imagem" accept="image/*" class="hidden" required>
+              <div id="preview" class="mt-4"></div>
+            </div>
+          </div>
+          
+
+          <div class="md:col-span-2 flex justify-end">
+            <button type="submit" class="bg-yellow-500 px-4 py-2 rounded-lg hover:bg-yellow-600">Salvar Equipamento</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Formulário de Registro de Ocorrências por Máquina -->
+      <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg text-sm md:text-base">
+        <h3 class="text-xl mb-4">🛠️ Registrar Ocorrência por Máquina</h3>
+        <form class="grid grid-cols-1 gap-4" action="/v1/ocorrencia/novo" method="POST">
+          <input type="text" name="equipamento" placeholder="Nome do Equipamento ou ID" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="date" name="data" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="text" name="tipo" placeholder="Tipo de Ocorrência (Ex: Paragem, Manutenção)" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <textarea name="descricao" placeholder="Descrição da Ocorrência" class="p-3 rounded-lg bg-gray-800 text-white" rows="4" required></textarea>
+          <div class="flex justify-end">
+            <button type="submit" class="bg-yellow-500 px-4 py-2 rounded-lg hover:bg-yellow-600">Salvar Ocorrência</button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <div class="mt-10 mb-4">
@@ -91,30 +146,41 @@
 
     <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg fade-in overflow-x-auto">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl">📊 Resultados da Análise</h3>
+        <h3 class="text-xl">📊 Lsita de equipamentos</h3>
         <button onclick="abrirModalAssunto()" class="bg-yellow-500 px-3 py-1 rounded hover:bg-yellow-600">➕</button>
       </div>
       <table class="min-w-full divide-y divide-gray-700 text-sm text-left text-white" id="tabelaResultados">
         <thead class="bg-gray-800">
           <tr>
-            <th class="px-6 py-3">Tópico</th>
-            <th class="px-6 py-3">Sentimento</th>
-            <th class="px-6 py-3">Confiança +</th>
-            <th class="px-6 py-3">Confiança -</th>
-            <th class="px-6 py-3">Ações</th>
+            <th class="px-6 py-3">Ord</th>
+            <th class="px-6 py-3">imagem</th>
+            <th class="px-6 py-3">Designação</th>
+            <th class="px-6 py-3">Marca</th>
+            <th class="px-6 py-3">Quantidade</th>
+            <th class="px-6 py-3">Estado</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-700" id="dataTable">
           <tr class="hover:bg-gray-700">
-            <td class="px-6 py-4">= assunto.Assunto</td>
-            <td class="px-6 py-4 text-green-400">assunto.Positivo</td>
-            <td class="px-6 py-4 text-red-400">assunto.Neutro</td>
-            <td class="px-6 py-4 text-yellow-400">assunto.Negativo</td>
-            <td class="px-6 py-4 space-x-2">
-              <a href="/v1/sentIA/avatar/painel_assuntos/assunto._id" class="text-red-600 px-3 py-2 rounded hover:bg-red-700">🗑️</a>
-              <a href="/v1/sentIA/avatar/filtro" class="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700">!</a>
-              <button onclick="openModal()" class="bg-purple-600 px-3 py-2 rounded-lg hover:bg-purple-700">Análise Profunda</button>
-            </td>
+           
+             <% DadosEquipamento.forEach(Equipamento =>{ %>
+                <tr class="hover:bg-gray-700">
+                <td class="px-6 py-4"></td>
+                <td class="px-6 py-4"><%= Equipamento.imagem %></td>
+                <td class="px-6 py-4"><%= Equipamento.desinacao %></td> 
+                <td class="px-6 py-4"><%= Equipamento.desinacao %></td> 
+                <td class="px-6 py-4"><%= Equipamento.desinacao %></td>
+                <td class="px-6 py-4"><%= Equipamento.desinacao %></td> 
+
+                <td class="px-6 py-4 space-x-2">
+                    <a href="/v1/sentIA/avatar/painel_assuntos/ " class="text-red-600 px-3 py-2 rounded hover:bg-red-700"> 🗑️</a>
+                    <a href="/v1/sentIA/avatar/filtro/ >" class="bg-blue-600 text-white-600 px-3 py-2 rounded hover:bg-blue-700"> ! </a>
+                    <button onclick="openModal()" class="bg-purple-600 px-3 py-2 rounded-lg hover:bg-purple-700">
+                        Análise Profunda
+                    </button>
+                </td>
+                </tr>
+            <% }) %>
           </tr>
         </tbody>
       </table>
@@ -164,5 +230,108 @@
 </div>
 
 <script src="/js/char.js"></script>
+<script>
+  const dropArea = document.getElementById('drop-area');
+  const fileInput = document.getElementById('imagem');
+  const preview = document.getElementById('preview');
+
+  dropArea.addEventListener('click', () => fileInput.click());
+  dropArea.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropArea.classList.add('border-green-400');
+  });
+  dropArea.addEventListener('dragleave', () => dropArea.classList.remove('border-green-400'));
+  dropArea.addEventListener('drop', e => {
+    e.preventDefault();
+    dropArea.classList.remove('border-green-400');
+    fileInput.files = e.dataTransfer.files;
+    showPreview(fileInput.files[0]);
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) showPreview(fileInput.files[0]);
+  });
+
+  function showPreview(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.innerHTML = `<img src="${e.target.result}" alt="Pré-visualização" class="w-32 h-32 object-cover rounded-lg border mt-2"> <p class='text-sm mt-2'>${file.name}</p>`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  const equipamentoForm = document.querySelector("form[action='/pixelprint/equipamento/novo']");
+  const ocorrenciaForm = document.querySelector("form[action='/v1/ocorrencia/novo']");
+  const loader = document.getElementById('loader-overlay');
+  const dataTable = document.getElementById("dataTable");
+
+  function adicionarLinhaTabelaEquipamento(dados, ordem) {
+    const novaLinha = document.createElement("tr");
+    novaLinha.classList.add("hover:bg-gray-700");
+    novaLinha.innerHTML = `
+      <td class="px-6 py-4">${ordem}</td>
+      <td class="px-6 py-4"><img src="/public/uploads/${dados.imagem}" class="w-10 h-10 rounded" alt="Imagem"></td>
+      <td class="px-6 py-4">${dados.desinacao}</td>
+      <td class="px-6 py-4">${dados.marca}</td>
+      <td class="px-6 py-4">${dados.quantidade}</td>
+      <td class="px-6 py-4">${dados.estado}</td>
+    `;
+    dataTable.appendChild(novaLinha);
+  }
+
+  async function enviarFormularioEquipamento() {
+    try {
+      loader.style.display = 'flex';
+      const formData = new FormData(equipamentoForm);
+      const response = await fetch(equipamentoForm.action, {
+        method: 'POST',
+        body: formData
+      });
+      loader.style.display = 'none';
+      if (response.ok) {
+        const dados = await response.json().then(t=>{
+          const final = t
+          alert(`✅ Equipamento ${t}`);
+        });
+        alert("✅ Equipamento salvo com sucesso!");
+        equipamentoForm.reset();
+        preview.innerHTML = "";
+        adicionarLinhaTabelaEquipamento(dados, dataTable.children.length + 1);
+      } else {
+        const erro = await response.text();
+        alert("❌ Erro ao salvar equipamento: " + erro);
+      }
+    } catch (erro) {
+      loader.style.display = 'none';
+      alert("❌ Erro inesperado: " + erro.message);
+    }
+  }
+
+  if (equipamentoForm) {
+    equipamentoForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+      enviarFormularioEquipamento();
+    });
+  }
+
+  if (ocorrenciaForm) {
+    ocorrenciaForm.addEventListener("submit", async function(event) {
+      event.preventDefault();
+      loader.style.display = 'flex';
+      const formData = new FormData(ocorrenciaForm);
+      const response = await fetch(ocorrenciaForm.action, {
+        method: 'POST',
+        body: formData
+      });
+      loader.style.display = 'none';
+      if (response.ok) {
+        alert("✅ Ocorrência registrada com sucesso!");
+        ocorrenciaForm.reset();
+      } else {
+        alert("❌ Falha ao registrar a ocorrência.");
+      }
+    });
+  }
+</script>
+
 </body>
 </html>

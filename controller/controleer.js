@@ -63,17 +63,38 @@ const NovoEquiamento = async (req, res) => {
 
     await novoEquipamento.save();
     const listaEquipamentos = await models.Equipamento.find({})
-    res.json({dados:listaEquipamentos})
+    res.json({equipamento:listaEquipamentos, mensagem:'Operação concluida com sucesso!'})
     //res.status(201).send({ message: 'Equipamento cadastrado com sucesso!' });
   } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: 'Erro ao cadastrar o equipamento.' });
+    //console.error(error);
+    //res.status(500).send({ error: 'Erro ao cadastrar o equipamento.' });
+    res.json({mensagem:'Falha na Operação, não possivel conlcuir com sucesso!'})
   }
 };
 
+//Excluir euipamento
+const ExcluirEquipamento = async (req, res) => {
+    try {
+        // Obtendo o ID do parâmetro da requisição
+        const { id } = req.params;
+        // Buscando e excluindo o registro
+        const resultado = await models.Equipamento.findByIdAndDelete(id);
+
+        if (!resultado) {
+            //return res.status(404).json(resultado);
+            //res.redirect('/pixelprint/equipamentos')
+        }
+        res.redirect('/pixelprint/equipamentos')
+       // res.send('Regisgito excluido com sucesso'); // Redireciona após exclusão
+    } catch (error) {
+        //res.status(500).send("Erro ao excluir registro");
+        res.redirect('/pixelprint/equipamentos')
+    }
+};
 
 module.exports= {
     Novo_funcionario,
     Acesso,
-    NovoEquiamento
+    NovoEquiamento,
+    ExcluirEquipamento
 }

@@ -75,22 +75,7 @@
   </aside>
 
   <!-- Conteúdo -->
-  <main class="flex-1 p-6 overflow-y-auto">
-    <div class="mt-12">
-      <h3 class="text-xl mb-4">Controle de equipamentos</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg w-full h-[270px]">
-          <canvas id="graficoBarrasVerticais"></canvas>
-        </div>
-        <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg w-full h-[270px]">
-          <canvas id="graficoBarrasHorizontais"></canvas>
-        </div>
-        <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg w-full h-[280px]">
-          <canvas id="graficoPizza"></canvas>
-        </div>
-      </div>
-    </div>
-
+  <main class="flex-1 p-6 overflow-y-auto"> 
 
     <!-- Formulários de Registro -->
     <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -99,15 +84,7 @@
         <h3 class="text-xl mb-4">📦 Registrar Novo Equipamento</h3>
         <form class="grid grid-cols-1 md:grid-cols-2 gap-4" action="/pixelprint/equipamento/novo" method="POST" enctype="multipart/form-data">
           
-          <!-- Upload de Imagem com Arrastar e Soltar -->
-          <div class="md:col-span-2">
-            
-            <div id="drop-area" class="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-yellow-400 rounded-lg cursor-pointer bg-gray-800 text-center">
-              <p class="mb-2 text-sm text-gray-300">Arraste e solte uma imagem aqui ou clique para selecionar</p>
-              <input type="file" id="imagem" name="imagem" accept="image/*" class="hidden" required>
-              <div id="preview" class="mt-4"></div>
-            </div>
-          </div>
+          
           
           <input type="text" name="desinacao" placeholder="Designação" class="p-3 rounded-lg bg-gray-800 text-white" required>
           <input type="text" name="marca" placeholder="Marca" class="p-3 rounded-lg bg-gray-800 text-white" required>
@@ -116,6 +93,16 @@
           <input type="text" name="areafuncional" placeholder="Área Funcional" class="p-3 rounded-lg bg-gray-800 text-white" required>
           <input type="number" name="Qt_em_uso" placeholder="Quantidade em Uso" class="p-3 rounded-lg bg-gray-800 text-white" required>
           <input type="date" name="Data_entrada" class="p-3 rounded-lg bg-gray-800 text-white" required>
+
+          <!-- Upload de Imagem com Arrastar e Soltar -->
+          <div class="md:col-span-2">
+            
+            <div id="drop-area" class="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-white-400 rounded-lg cursor-pointer bg-gray-800 text-center">
+              <p class="mb-2 text-sm text-gray-300">Arraste e solte uma imagem aqui ou clique para selecionar</p>
+              <input type="file" id="imagem" name="imagem" accept="image/*" class="hidden" required>
+              <div id="preview" class="mt-4"></div>
+            </div>
+          </div>
 
           <div class="md:col-span-2 flex justify-end">
             <button type="submit" class="bg-yellow-500 px-4 py-2 rounded-lg hover:bg-yellow-600">Salvar Equipamento</button>
@@ -147,41 +134,48 @@
         <h3 class="text-xl">📊 Lsita de equipamentos</h3>
         <button onclick="abrirModalAssunto()" class="bg-yellow-500 px-3 py-1 rounded hover:bg-yellow-600">➕</button>
       </div>
-      <table class="min-w-full divide-y divide-gray-700 text-sm text-left text-white" id="tabelaResultados">
-        <thead class="bg-gray-800">
-          <tr>
-            <th class="px-6 py-3">Ord</th>
-            <th class="px-6 py-3">imagem</th>
-            <th class="px-6 py-3">Designação</th>
-            <th class="px-6 py-3">Marca</th>
-            <th class="px-6 py-3">Quantidade</th>
-            <th class="px-6 py-3">Estado</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-700" id="dataTable">
-          <tr class="hover:bg-gray-700">
-           
-             <% DadosEquipamento.forEach(Equipamento =>{ %>
-                <tr class="hover:bg-gray-700">
-                <td class="px-6 py-4"></td>
-                <td class="px-6 py-4"><%= Equipamento.imagem %></td>
-                <td class="px-6 py-4"><%= Equipamento.desinacao %></td> 
-                <td class="px-6 py-4"><%= Equipamento.desinacao %></td> 
-                <td class="px-6 py-4"><%= Equipamento.desinacao %></td>
-                <td class="px-6 py-4"><%= Equipamento.desinacao %></td> 
+    <table class="min-w-full divide-y divide-gray-700 text-sm text-left text-white" id="tabelaResultados">
+      <thead class="bg-gray-800">
+        <tr>
+          <th class="px-6 py-3">Imagem</th>
+          <th class="px-6 py-3">Designação</th>
+          <th class="px-6 py-3">Marca</th>
+          <th class="px-6 py-3">Quantidade</th>
+          <th class="px-6 py-3">Estado</th>
+          <th class="px-6 py-3">Ações</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-700" id="dataTable">
+        <% DadosEquipamento.forEach(Equipamento => { %>
+        <tr class="hover:bg-gray-700 relative group">
+          <td class="px-6 py-4 relative">
+            <img 
+              src="/uploads/<%= Equipamento.imagem %>" 
+              alt="Equipamento" 
+              class="w-12 h-12 object-cover rounded shadow hover:scale-110 transition-transform duration-300 cursor-pointer"
+              onmouseover="mostrarTooltip(this,`<%= Equipamento.stockConsumiveis %>`)" 
+              onmouseout="esconderTooltip()"
+            >
+            <div class="absolute z-50 hidden group-hover:block bg-gray-900 text-white text-xs rounded p-2 mt-2 w-52 shadow-lg" id="tooltip">
+              <span id="infoTooltip"></span>
+            </div>
+          </td>
+          <td class="px-6 py-4"><%= Equipamento.desinacao %></td>
+          <td class="px-6 py-4"><%= Equipamento.marca %></td>
+          <td class="px-6 py-4"><%= Equipamento.quantidade %></td>
+          <td class="px-6 py-4"><%= Equipamento.estado %></td>
+          <td class="px-6 py-4 space-x-2 flex flex-wrap items-center justify-start">
+            <a href="/pixelprint/equipamento/excluir/<%= Equipamento._id %>" class="text-red-600 px-3 py-2 rounded hover:bg-red-700 transition-all duration-300">Delete</a>
+            <a href="/v1/sentIA/avatar/filtro/" class="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 transition-all duration-300">!</a>
+            <button onclick="openModal()" class="bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 transition-all duration-300">
+              Análise Profunda
+            </button>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
 
-                <td class="px-6 py-4 space-x-2">
-                    <a href="/v1/sentIA/avatar/painel_assuntos/ " class="text-red-600 px-3 py-2 rounded hover:bg-red-700"> 🗑️</a>
-                    <a href="/v1/sentIA/avatar/filtro/ >" class="bg-blue-600 text-white-600 px-3 py-2 rounded hover:bg-blue-700"> ! </a>
-                    <button onclick="openModal()" class="bg-purple-600 px-3 py-2 rounded-lg hover:bg-purple-700">
-                        Análise Profunda
-                    </button>
-                </td>
-                </tr>
-            <% }) %>
-          </tr>
-        </tbody>
-      </table>
     </div>
   </main>
 </div>
@@ -229,25 +223,67 @@
 
 <script src="/js/char.js"></script>
 <script>
- 
+  const dropArea = document.getElementById('drop-area');
+  const fileInput = document.getElementById('imagem');
+  const preview = document.getElementById('preview');
+
+  dropArea.addEventListener('click', () => fileInput.click());
+  dropArea.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropArea.classList.add('border-green-400');
+  });
+  dropArea.addEventListener('dragleave', () => dropArea.classList.remove('border-green-400'));
+  dropArea.addEventListener('drop', e => {
+    e.preventDefault();
+    dropArea.classList.remove('border-green-400');
+    fileInput.files = e.dataTransfer.files;
+    showPreview(fileInput.files[0]);
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) showPreview(fileInput.files[0]);
+  });
+
+  function showPreview(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.innerHTML = `<img src="${e.target.result}" alt="Pré-visualização" class="w-32 h-32 object-cover rounded-lg border mt-2"> <p class='text-sm mt-2'>${file.name}</p>`;
+    };
+    reader.readAsDataURL(file);
+  }
+
   const equipamentoForm = document.querySelector("form[action='/pixelprint/equipamento/novo']");
   const ocorrenciaForm = document.querySelector("form[action='/v1/ocorrencia/novo']");
   const loader = document.getElementById('loader-overlay');
   const dataTable = document.getElementById("dataTable");
 
-  function adicionarLinhaTabelaEquipamento(dados, ordem) {
-    const novaLinha = document.createElement("tr");
-    novaLinha.classList.add("hover:bg-gray-700");
-    novaLinha.innerHTML = `
-      <td class="px-6 py-4">${ordem}</td>
-      <td class="px-6 py-4"><img src="/public/uploads/${dados.imagem}" class="w-10 h-10 rounded" alt="Imagem"></td>
-      <td class="px-6 py-4">${dados.desinacao}</td>
-      <td class="px-6 py-4">${dados.marca}</td>
-      <td class="px-6 py-4">${dados.quantidade}</td>
-      <td class="px-6 py-4">${dados.estado}</td>
-    `;
-    dataTable.appendChild(novaLinha);
+ function adicionarLinhaTabelaEquipamento(dados, ordemInicial) {
+    if (Array.isArray(dados)) {
+      dados.forEach((item) => {
+        const novaLinha = document.createElement("tr");
+        novaLinha.classList.add("hover:bg-gray-700");
+        novaLinha.innerHTML = ` 
+          <td class="px-6 py-4"><img src="/uploads/${item.imagem}" class="w-10 h-10 rounded" alt="Imagem"></td>
+          <td class="px-6 py-4">${item.desinacao}</td>
+          <td class="px-6 py-4">${item.marca}</td>
+          <td class="px-6 py-4">${item.quantidade}</td>
+          <td class="px-6 py-4">${item.estado}</td>
+        `;
+        dataTable.appendChild(novaLinha);
+      });
+    } else {
+      const novaLinha = document.createElement("tr");
+      novaLinha.classList.add("hover:bg-gray-700");
+      novaLinha.innerHTML = ` 
+        <td class="px-6 py-4"><img src="/public/uploads/${dados.imagem}" class="w-10 h-10 rounded" alt="Imagem"></td>
+        <td class="px-6 py-4">${dados.desinacao}</td>
+        <td class="px-6 py-4">${dados.marca}</td>
+        <td class="px-6 py-4">${dados.quantidade}</td>
+        <td class="px-6 py-4">${dados.estado}</td>
+      `;
+      dataTable.appendChild(novaLinha);
+    }
   }
+
 
   async function enviarFormularioEquipamento() {
     try {
@@ -258,15 +294,17 @@
         body: formData
       });
       loader.style.display = 'none';
+
+      const dados = await response.json();
+      const lista_Equipamentos = dados.equipamento
+
       if (response.ok) {
-        const dados = await response.json();
-        alert("✅ Equipamento salvo com sucesso!");
+        alert(`✅ Equipamento salvo com sucesso! Mensagem do servidor: ${lista_Equipamentos.marca || 'Sem mensagem.'}`);
         equipamentoForm.reset();
         preview.innerHTML = "";
-        adicionarLinhaTabelaEquipamento(dados, dataTable.children.length + 1);
+        adicionarLinhaTabelaEquipamento(lista_Equipamentos, dataTable.children.length + 1);
       } else {
-        const erro = await response.text();
-        alert("❌ Erro ao salvar equipamento: " + erro);
+        alert("❌ Erro ao salvar equipamento: " + (dados.mensagem || JSON.stringify(dados)));
       }
     } catch (erro) {
       loader.style.display = 'none';
@@ -299,6 +337,27 @@
       }
     });
   }
+</script>
+
+
+<script>
+  function mostrarTooltip(img, stock) {
+    const tooltip = img.parentElement.querySelector("#tooltip");
+    const infoTooltip = tooltip.querySelector("#infoTooltip");
+
+    // Define cor com base na quantidade
+    let cor = "text-green-500";
+    if (stock < 2) cor = "text-red-500";
+    else if (stock <= 3) cor = "text-yellow-400";
+
+    infoTooltip.innerHTML = `<span class="${cor} font-semibold">Stock de consumíveis:</span> ${stock} unidade(s)`;
+    tooltip.classList.remove("hidden");
+  }
+
+  function esconderTooltip() {
+    document.querySelectorAll("#tooltip").forEach(t => t.classList.add("hidden"));
+  }
+ 
 </script>
 
 </body>
