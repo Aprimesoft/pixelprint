@@ -92,9 +92,60 @@ const ExcluirEquipamento = async (req, res) => {
     }
 };
 
+
+//Ocorrencias
+//Registrar equipamentos
+const NovaOcorrencia = async (req, res) => {
+  console.log('cheguei .... ocorrencias')
+  try {
+    const novaocorencia = await new models.Ocorencia({
+      ID_equipamento:req.body.equipamento_ID, 
+      Tipo_ocorrencia:req.body.tipo, 
+      Data_ocorrencia:req.body.data, 
+      Descrição:req.body.descricao,  
+    });
+
+    await novaocorencia.save(); 
+    const listaocorrencias = await models.Ocorencia.find({})
+    console.log(listaocorrencias)
+    
+    res.json({mensagem:'✅ Operação concluida com sucesso!'})
+  } catch (error) {
+    res.json({mensagem:'❌ Falha ao registrar a ocorrência.'})
+
+  }
+};
+
 module.exports= {
     Novo_funcionario,
     Acesso,
     NovoEquiamento,
-    ExcluirEquipamento
+    ExcluirEquipamento,
+    NovaOcorrencia
 }
+
+/*
+setTimeout(() => {
+          loader.style.display = 'flex';
+      }, 100); 
+
+      const formData = new FormData(ocorrenciaForm);
+      const response = await fetch(ocorrenciaForm.action, {
+        method: 'POST',
+        body: formData
+      });
+      loader.style.display = 'none';
+
+      const Retorno = await response.json();
+
+      if (response.ok) {
+        setTimeout(() => { 
+          mensagem_feedback.innerHTML = `✅ ${Retorno.mensagem}!`; 
+          ocorrenciaForm.reset();
+        }, 200);
+
+      } else {
+        setTimeout(() => { 
+          mensagem_feedback.innerHTML = `${Retorno.mensagem}!`;  
+        }, 200); 
+      }*/

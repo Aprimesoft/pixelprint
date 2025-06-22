@@ -24,6 +24,12 @@ const Equipamento = mongoose.model('Equipamento',{
     Data_entrada:Date,
     imagem:String
 })
+const Ocorencia = mongoose.model('Ocorencia',{
+    ID_equipamento:String,
+    Tipo_ocorrencia:String,
+    Data_ocorrencia:Date,
+    Descrição:String
+})
 /*
 const Topicos = mongoose.model('Topicos',{
     Assunto:String,
@@ -45,5 +51,6 @@ const comentarios = mongoose.model('comentarios',{
 */
 module.exports = {
     Utilizador, 
-    Equipamento
+    Equipamento,
+    Ocorencia
 }

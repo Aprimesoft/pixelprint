@@ -10,7 +10,7 @@
   <style>
     body {
       background: radial-gradient(circle at top left, #0F172A, #1E293B);
-    }
+    } 
     .fade-in {
       animation: fadeIn 0.5s ease-in-out forwards;
     }
@@ -41,7 +41,7 @@
       <span class="w-4 h-4 bg-yellow-500 rounded-full animate-bounce delay-150"></span>
       <span class="w-4 h-4 bg-yellow-600 rounded-full animate-bounce delay-300"></span>
     </div>
-    <p class="mt-4">Salvando os dados ... </p>
+    <p class="mt-4" id="feedback">Salvando os dados ... </p>
   </div>
 </div>
 
@@ -86,18 +86,32 @@
           
           
           
-          <input type="text" name="desinacao" placeholder="Designação" class="p-3 rounded-lg bg-gray-800 text-white" required>
-          <input type="text" name="marca" placeholder="Marca" class="p-3 rounded-lg bg-gray-800 text-white" required>
-          <input type="number" name="quantidade" placeholder="Quantidade" class="p-3 rounded-lg bg-gray-800 text-white" required>
-          <input type="text" name="estado" placeholder="Estado" class="p-3 rounded-lg bg-gray-800 text-white" required>
-          <input type="text" name="areafuncional" placeholder="Área Funcional" class="p-3 rounded-lg bg-gray-800 text-white" required>
-          <input type="number" name="Qt_em_uso" placeholder="Quantidade em Uso" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          <input type="text" name="desinacao" placeholder="Nome do equipamento" class="md:col-span-2 p-3 rounded-lg bg-gray-800 text-white" required>
+         
+          <input type="text" name="marca" placeholder="Marca" class="p-3 rounded-lg bg-gray-800 text-white" required> 
+          <input type="number" name="quantidade" placeholder="Quantidade" class="p-3 rounded-lg bg-gray-800 text-white" required min="1" value="1">   
+           <select name="estado" id="" class="p-3 rounded-lg bg-gray-800 text-white" required>
+            <option >Selecione o estado</option>
+            <option value="Avariado">Avariado</option>
+            <option value="Em stock">Em stock</option> 
+            <option value="Funcional">Funcional</option>
+          </select> 
+          <input type="number" name="Qt_em_uso" placeholder="Quantidade em Uso" class="p-3 rounded-lg bg-gray-800 text-white" required min="0" value="0">
+          
+          <select name="areafuncional" id="" class="p-3 rounded-lg bg-gray-800 text-white" required>
+            <option  >Selecione a Área funcional</option>
+            <option value="Escritório">Escritório</option>
+            <option value="Produção Interna">Produção Interna</option>
+            <option value="Produção Externa">Produção Externa</option>
+            <option value="Uso Geral">Uso Geral</option>
+            
+          </select> 
           <input type="date" name="Data_entrada" class="p-3 rounded-lg bg-gray-800 text-white" required>
 
           <!-- Upload de Imagem com Arrastar e Soltar -->
           <div class="md:col-span-2">
             
-            <div id="drop-area" class="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-white-400 rounded-lg cursor-pointer bg-gray-800 text-center">
+            <div id="drop-area" class="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-white-400 rounded-lg cursor-pointer bg-gray-800 text-center" re>
               <p class="mb-2 text-sm text-gray-300">Arraste e solte uma imagem aqui ou clique para selecionar</p>
               <input type="file" id="imagem" name="imagem" accept="image/*" class="hidden" required>
               <div id="preview" class="mt-4"></div>
@@ -113,10 +127,21 @@
       <!-- Formulário de Registro de Ocorrências por Máquina -->
       <div class="bg-[#1E293B] p-6 rounded-2xl shadow-lg text-sm md:text-base">
         <h3 class="text-xl mb-4">🛠️ Registrar Ocorrência por Máquina</h3>
-        <form class="grid grid-cols-1 gap-4" action="/v1/ocorrencia/novo" method="POST">
-          <input type="text" name="equipamento" placeholder="Nome do Equipamento ou ID" class="p-3 rounded-lg bg-gray-800 text-white" required>
+        <form class="grid grid-cols-1 gap-4" action="/pixelprint/castrar/novaocorencia" method="POST">
+          
+          <select name="equipamento_ID" id="" class="p-3 rounded-lg bg-gray-800 text-white" required>
+            <% DadosEquipamento.forEach(Equipamento => { %>
+                <option value="<%= Equipamento._id %>"><%= Equipamento.desinacao %></option> 
+            <% }) %>
+          </select> 
           <input type="date" name="data" class="p-3 rounded-lg bg-gray-800 text-white" required>
-          <input type="text" name="tipo" placeholder="Tipo de Ocorrência (Ex: Paragem, Manutenção)" class="p-3 rounded-lg bg-gray-800 text-white" required>
+          
+          <select name="tipo" id="" class="p-3 rounded-lg bg-gray-800 text-white" required>
+            <option >Selecione o tipo de Ocorrencia</option> 
+            <option value="Avaria">Avaria</option> 
+            <option value="Manutenção">Manutenção</option> 
+             <option value="Paragem repentina">Paragem repentina</option>  
+          </select> 
           <textarea name="descricao" placeholder="Descrição da Ocorrência" class="p-3 rounded-lg bg-gray-800 text-white" rows="4" required></textarea>
           <div class="flex justify-end">
             <button type="submit" class="bg-yellow-500 px-4 py-2 rounded-lg hover:bg-yellow-600">Salvar Ocorrência</button>
@@ -134,47 +159,47 @@
         <h3 class="text-xl">📊 Lsita de equipamentos</h3>
         <button onclick="abrirModalAssunto()" class="bg-yellow-500 px-3 py-1 rounded hover:bg-yellow-600">➕</button>
       </div>
-    <table class="min-w-full divide-y divide-gray-700 text-sm text-left text-white" id="tabelaResultados">
-      <thead class="bg-gray-800">
-        <tr>
-          <th class="px-6 py-3">Imagem</th>
-          <th class="px-6 py-3">Designação</th>
-          <th class="px-6 py-3">Marca</th>
-          <th class="px-6 py-3">Quantidade</th>
-          <th class="px-6 py-3">Estado</th>
-          <th class="px-6 py-3">Ações</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-700" id="dataTable">
-        <% DadosEquipamento.forEach(Equipamento => { %>
-        <tr class="hover:bg-gray-700 relative group">
-          <td class="px-6 py-4 relative">
-            <img 
-              src="/uploads/<%= Equipamento.imagem %>" 
-              alt="Equipamento" 
-              class="w-12 h-12 object-cover rounded shadow hover:scale-110 transition-transform duration-300 cursor-pointer"
-              onmouseover="mostrarTooltip(this,`<%= Equipamento.stockConsumiveis %>`)" 
-              onmouseout="esconderTooltip()"
-            >
-            <div class="absolute z-50 hidden group-hover:block bg-gray-900 text-white text-xs rounded p-2 mt-2 w-52 shadow-lg" id="tooltip">
-              <span id="infoTooltip"></span>
-            </div>
-          </td>
-          <td class="px-6 py-4"><%= Equipamento.desinacao %></td>
-          <td class="px-6 py-4"><%= Equipamento.marca %></td>
-          <td class="px-6 py-4"><%= Equipamento.quantidade %></td>
-          <td class="px-6 py-4"><%= Equipamento.estado %></td>
-          <td class="px-6 py-4 space-x-2 flex flex-wrap items-center justify-start">
-            <a href="/pixelprint/equipamento/excluir/<%= Equipamento._id %>" class="text-red-600 px-3 py-2 rounded hover:bg-red-700 transition-all duration-300">Delete</a>
-            <a href="/v1/sentIA/avatar/filtro/" class="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 transition-all duration-300">!</a>
-            <button onclick="openModal()" class="bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 transition-all duration-300">
-              Análise Profunda
-            </button>
-          </td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
+      <table class="min-w-full divide-y divide-gray-700 text-sm text-left text-white" id="tabelaResultados">
+        <thead class="bg-gray-800">
+          <tr>
+            <th class="px-6 py-3">Imagem</th>
+            <th class="px-6 py-3">Designação</th>
+            <th class="px-6 py-3">Marca</th>
+            <th class="px-6 py-3">Quantidade</th>
+            <th class="px-6 py-3">Estado</th>
+            <th class="px-6 py-3">Ações</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-700" id="dataTable">
+            <% DadosEquipamento.forEach(Equipamento => { %>
+            <tr class="hover:bg-gray-700 relative group">
+              <td class="px-6 py-4 relative">
+                <img 
+                  src="/uploads/<%= Equipamento.imagem %>" 
+                  alt="Equipamento" 
+                  class="w-12 h-12 object-cover rounded shadow hover:scale-110 transition-transform duration-300 cursor-pointer"
+                  onmouseover="mostrarTooltip(this,`<%= Equipamento.stockConsumiveis %>`)" 
+                  onmouseout="esconderTooltip()"
+                >
+                <div class="absolute z-50 hidden group-hover:block bg-gray-900 text-white text-xs rounded p-2 mt-2 w-52 shadow-lg" id="tooltip">
+                  <span id="infoTooltip"></span>
+                </div>
+              </td>
+              <td class="px-6 py-4"><%= Equipamento.desinacao %></td>
+              <td class="px-6 py-4"><%= Equipamento.marca %></td>
+              <td class="px-6 py-4"><%= Equipamento.quantidade %></td>
+              <td class="px-6 py-4"><%= Equipamento.estado %></td>
+              <td class="px-6 py-4 space-x-2 flex flex-wrap items-center justify-start">
+                <a href="/pixelprint/equipamento/excluir/<%= Equipamento._id %>" class="text-red-600 px-3 py-2 rounded hover:bg-red-700 transition-all duration-300">Delete</a>
+                <a href="/v1/sentIA/avatar/filtro/" class="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 transition-all duration-300">!</a>
+                <button onclick="openModal()" class="bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 transition-all duration-300">
+                  Análise Profunda
+                </button>
+              </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table> 
 
     </div>
   </main>
@@ -223,9 +248,10 @@
 
 <script src="/js/char.js"></script>
 <script>
+  const mensagem_feedback = document.getElementById("feedback") 
   const dropArea = document.getElementById('drop-area');
   const fileInput = document.getElementById('imagem');
-  const preview = document.getElementById('preview');
+  const preview = document.getElementById('preview'); 
 
   dropArea.addEventListener('click', () => fileInput.click());
   dropArea.addEventListener('dragover', e => {
@@ -252,7 +278,7 @@
   }
 
   const equipamentoForm = document.querySelector("form[action='/pixelprint/equipamento/novo']");
-  const ocorrenciaForm = document.querySelector("form[action='/v1/ocorrencia/novo']");
+  const ocorrenciaForm = document.querySelector("form[action='/pixelprint/castrar/novaocorencia");
   const loader = document.getElementById('loader-overlay');
   const dataTable = document.getElementById("dataTable");
 
@@ -283,32 +309,41 @@
       dataTable.appendChild(novaLinha);
     }
   }
-
-
+  
   async function enviarFormularioEquipamento() {
     try {
-      loader.style.display = 'flex';
+      setTimeout(() => {
+          loader.style.display = 'flex';
+      }, 100);
       const formData = new FormData(equipamentoForm);
       const response = await fetch(equipamentoForm.action, {
         method: 'POST',
         body: formData
       });
-      loader.style.display = 'none';
 
       const dados = await response.json();
       const lista_Equipamentos = dados.equipamento
 
       if (response.ok) {
-        alert(`✅ Equipamento salvo com sucesso! Mensagem do servidor: ${lista_Equipamentos.marca || 'Sem mensagem.'}`);
-        equipamentoForm.reset();
-        preview.innerHTML = "";
-        adicionarLinhaTabelaEquipamento(lista_Equipamentos, dataTable.children.length + 1);
+
+        setTimeout(() => { 
+          mensagem_feedback.innerHTML = "✅ Dados salvo com Sucesso. \p Novo Equipamento Adicionado";
+          window.location.href = '/pixelprint/equipamentos';
+        }, 200);
+        
+       //adicionarLinhaTabelaEquipamento(lista_Equipamentos, dataTable.children.length + 1);
       } else {
-        alert("❌ Erro ao salvar equipamento: " + (dados.mensagem || JSON.stringify(dados)));
+        setTimeout(() => { 
+          mensagem_feedback.innerHTML = "❌ Erro ao salvar equipamento"
+        }, 200);
+        loader.style.display = 'none';
       }
     } catch (erro) {
+      loader.style.display = 'flex';
+      setTimeout(() => { 
+          mensagem_feedback.innerHTML = "❌ Erro ao salvar equipamento"
+      }, 200);
       loader.style.display = 'none';
-      alert("❌ Erro inesperado: " + erro.message);
     }
   }
 
@@ -322,19 +357,29 @@
   if (ocorrenciaForm) {
     ocorrenciaForm.addEventListener("submit", async function(event) {
       event.preventDefault();
-      loader.style.display = 'flex';
+      setTimeout(() => {
+          loader.style.display = 'flex'; 
+      },100); 
+
       const formData = new FormData(ocorrenciaForm);
       const response = await fetch(ocorrenciaForm.action, {
         method: 'POST',
-        body: formData
+        body: json({})
       });
-      loader.style.display = 'none';
+      const Retorno = await response.json();
+
       if (response.ok) {
-        alert("✅ Ocorrência registrada com sucesso!");
-        ocorrenciaForm.reset();
+        setTimeout(() => { 
+          mensagem_feedback.innerHTML = `${Retorno.mensagem}!`; 
+          //ocorrenciaForm.reset();
+        }, 200);
+
       } else {
-        alert("❌ Falha ao registrar a ocorrência.");
+        setTimeout(() => { 
+          mensagem_feedback.innerHTML = `${Retorno.mensagem}!`;  
+        }, 200); 
       }
+      loader.style.display = 'flex'; 
     });
   }
 </script>

@@ -75,6 +75,8 @@ app.get('/pixelprint/equipamento/excluir/:id', verificarLogin,controller.Excluir
 const upload = require('./controller/multer')
 
 app.post('/pixelprint/equipamento/novo',upload.single('imagem'), controller.NovoEquiamento)
+app.post('/pixelprint/castrar/novaocorencia',controller. NovaOcorrencia)
+
 
 // Define a porta correta para ambientes online
 const PORTA = process.env.PORT || 8080;
