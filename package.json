@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "i": "npm i express ejs mongoose body-parser swagger swagger-ui-express multer xlsx dotenv openai cors express-session",
-    "dev":"node --watch app.js"
+    "dev": "node --watch app.js",
+    "start":"node app.js"
   },
   "repository": {
     "type": "git",
